@@ -1,5 +1,5 @@
 /*
- *      T4Cine
+ *      IW3Cine
  *      Default settings - "The poor man's GSH"
  */
 

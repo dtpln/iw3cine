@@ -1,5 +1,5 @@
-// _weapons.gsc -- added to manually add the hooks from sass' original mod. -4g
-// Functions edited: deletePickupAfterAwhile, watchPickup, dropWeaponForDeath
+// 	_weapons.gsc -- added to manually add the hooks from sass' original mod. -4g
+// 	Functions edited: deletePickupAfterAwhile, watchPickup, dropWeaponForDeath
 //
 
 #include common_scripts\utility;

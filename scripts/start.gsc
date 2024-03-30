@@ -1,5 +1,5 @@
 /*
- * 		T4Cine
+ * 		IW3Cine
  *		Entry point
  */
 

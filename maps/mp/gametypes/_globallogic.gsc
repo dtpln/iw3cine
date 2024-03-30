@@ -1,5 +1,5 @@
-// _globallogic.gsc -- added to manually include hooks in sass' original mod. -4g
-// functions edited: delayStartRagdoll, 
+//	_globallogic.gsc -- added to manually include hooks in sass' original mod. -4g
+//	Functions edited: delayStartRagdoll, 
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;

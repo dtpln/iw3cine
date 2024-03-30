@@ -1,5 +1,5 @@
 /*
- *      T4Cine
+ *      IW3Cine
  *      Miscellaneous functions
  */
 #include maps\mp\_utility;
@@ -109,7 +109,7 @@ magc_bullets()
 
 viewhands( args )
 {
-    self iPrintLn( "[" + level.HIGHLIGHT_COLOR + "T4Cine^7]Setting viewmodel to " + args[0] );
+    self iPrintLn( "[" + level.HIGHLIGHT_COLOR + "IW3Cine^7]Setting viewmodel to " + args[0] );
     self setViewmodel( args[0] );
     self.pers["viewmodel"] = args[0];
 }
@@ -130,7 +130,7 @@ reset_models()
 toggle_holding() //     Gotta do sum with this at some point. -4g
 {
     level.BOT_WEAPHOLD ^= 1;
-    self iPrintLn( "[" + level.HIGHLIGHT_COLOR + "T4Cine^7]Holding weapons on death: " + bool(level.BOT_WEAPHOLD) );
+    self iPrintLn( "[" + level.HIGHLIGHT_COLOR + "IW3Cine^7]Holding weapons on death: " + bool(level.BOT_WEAPHOLD) );
     
     if( !level.BOT_WEAPHOLD ) 
     {
@@ -146,7 +146,7 @@ toggle_freeze()
 {
     level.BOT_MOVE ^= 1;
     bots_tweaks();
-    self iPrintLn( "[" + level.HIGHLIGHT_COLOR + "T4Cine^7]No AI in T4. :(" );
+    self iPrintLn( "[" + level.HIGHLIGHT_COLOR + "IW3Cine^7]No AI in T4. :(" );
 }
 
 
@@ -158,7 +158,7 @@ spawn_model( args ) // Kinda useless, but decided to keep in. Spawn some trees o
     prop.angles = ( 0, self.angles[1], 0);
     prop setModel( model );
 
-    self iPrintLn( "[" + level.HIGHLIGHT_COLOR + "T4Cine^7]Spawned model " + model );
+    self iPrintLn( "[" + level.HIGHLIGHT_COLOR + "IW3Cine^7]Spawned model " + model );
 }
 
 spawn_fx( args )
@@ -173,7 +173,7 @@ change_vision( args )
 {
     vision = args[0];
     VisionSetNaked( vision );
-    self iPrintLn( "[" + level.HIGHLIGHT_COLOR + "T4Cine^7]Vision changed to : " + vision);
+    self iPrintLn( "[" + level.HIGHLIGHT_COLOR + "IW3Cine^7]Vision changed to : " + vision);
 }
 
 change_fog( args )
@@ -203,7 +203,7 @@ welcome()
     self freezeControls( false );
     level.prematchPeriodEnd = -1;
 	self IPrintLn("Welcome to ^3Sass' Cinematic Mod");
-    self IPrintLn("Ported to WAW by ^3Forgive & Antiga");
+    self IPrintLn("Ported to COD4 by ^3Forgive");
 	self IPrintLn("Type ^3/about 1 ^7for more info");
 	self.donefirst = 1;
 }

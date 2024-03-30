@@ -1,5 +1,5 @@
 /*
- *      T4Cine -- DONE
+ *      IW3Cine
  *      Player-related functions
  */
 
