@@ -19,7 +19,7 @@ This mod was also designed as a Multiplayer mod only. It will not work in Single
 <br/><br/>
 ## Requirements
 
-In order to use the latest version of this mod directly from the repo, you'll need a copy of **Call of Duty 4: Modern Warfare®** with or without the **[iw3xo](https://xoxor4d.github.io/projects/iw3xo)** client installed.
+In order to use the latest version of this mod directly from the repo, you'll need a copy of **Call of Duty 4: Modern Warfare®** with or without the **[IW3XO](https://xoxor4d.github.io/projects/iw3xo)** client or [COD4x](https://cod4x.ovh/t/releases/24) installed.
 
 <br/><br/>
 ## Installation
@@ -51,7 +51,36 @@ Once [Sass](https://github.com/sortileges) finishes the mod's rewrite, the HTML 
 
 <br/><br/>
 ## Features
-- Check **[FEATURES.md](https://github.com/dtpln/iw3cine/blob/main/FEATURES.md)**
+**MISC FUNCTIONS**
+
+    - [x]   clone             -- <set to 1>
+    - [x]   drop              -- <set to 1>
+    - [x]   about             -- <set to 1>
+    - [x]   clearbodies       -- <set to 1>
+    - [ ]   viewhands         -- <model_name>
+    - [x]   eb_explosive      -- <radius>
+    - [x]   eb_magic          -- <degrees>
+    - [x]   spawn_model       -- <model_name>
+    - [x]   spawn_fx          -- <fx_name>
+    - [x]   vision            -- <vision>
+    - [x]   fog               -- <start> <half> <r> <g> <b> <a> <time>
+
+**BOT FUNCTIONS**
+
+    - [x]   spawn             -- <weapon_mp> <allies/axis> <model>
+    - [ ]   weapon            -- <bot_name> <weapon_name> <camo_name>
+    - [x]   move              -- <bot_name>
+    - [x]   aim               -- <bot_name>
+    - [x]   stare             -- <bot_name>
+    - [x]   model
+    - [x]   kill              -- <bot_name> <body/head>
+    - [x]   holdgun
+    - [ ]   freeze            -- <set to 1>
+   
+</br><br/>
+**PLANNED FEATURES**
+    
+    - [ ]    Implementation of Bot Warfare mod.
 
 <br/><br/>
 ## Credits
