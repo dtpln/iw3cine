@@ -57,25 +57,25 @@ Once [Sass](https://github.com/sortileges) finishes the mod's rewrite, the HTML 
     - [x]   drop              -- <set to 1>
     - [x]   about             -- <set to 1>
     - [x]   clearbodies       -- <set to 1>
-    - [ ]   viewhands         -- <model_name>
+    - [x]   viewhands         -- <model_name>
     - [x]   eb_explosive      -- <radius>
     - [x]   eb_magic          -- <degrees>
     - [x]   spawn_model       -- <model_name>
     - [x]   spawn_fx          -- <fx_name>
     - [x]   vision            -- <vision>
-    - [x]   fog               -- <start> <half> <r> <g> <b> <a> <time>
+    - [x]   fog               -- <start> <half> <red> <green> <blue> <time>
 
 **BOT FUNCTIONS**
 
     - [x]   spawn             -- <weapon_mp> <allies/axis> <model>
-    - [ ]   weapon            -- <bot_name> <weapon_name> <camo_name>
+    - [x]   weapon            -- <bot_name> <weapon_name> <camo_name>
     - [x]   move              -- <bot_name>
     - [x]   aim               -- <bot_name>
     - [x]   stare             -- <bot_name>
     - [x]   model
     - [x]   kill              -- <bot_name> <body/head>
     - [x]   holdgun
-    - [ ]   freeze            -- <set to 1>
+    - [ ]   freeze            -- <set to 1> // Leaving out for now since bots have 0 AI.
    
 </br><br/>
 **PLANNED FEATURES**

@@ -13,10 +13,11 @@ add( args )
 {
     weapon = args[0];
     team = args[1];
-    
+    model = args[2];
+
     ent = addtestclient();
     ent persistence();
-    ent spawnme(self, weapon, team);
+    ent thread spawnme(self, weapon, team, model); // this needs to be threaded or else it will spawn two..
 
     create_kill_params();
 }
@@ -28,7 +29,7 @@ persistence()
     self.pers["fakeModel"]  = false;    // has the bot's model been changed?
 }
 
-spawnme( owner, weapon, team )
+spawnme( owner, weapon, team, model )
 {
     while ( !isdefined( self.pers["team"] ) ) skipframe();
 
@@ -41,13 +42,14 @@ spawnme( owner, weapon, team )
 
     skipframe();
 
-    self notify("menuresponse","changeclass","sniper_mp");
+    self notify("menuresponse","changeclass" ,model + "_mp" );
 
     loadout = create_loadout( weapon );
     self thread create_spawn_thread( scripts\bots::give_loadout_on_spawn, loadout );
     self thread create_spawn_thread( scripts\bots::attach_weapons, loadout );
 
     self waittill( "spawned_player" );
+    self freezeControls( true );
     self setOrigin( at_crosshair( owner ) );
     self setPlayerAngles( owner.angles + ( 0, 180, 0 ) );
 
@@ -66,7 +68,8 @@ move( args )
     for ( i = 0; i < level.players.size; i++ )
     {
         player = level.players[i];
-        if ( select_ents( player, name, self ) ) {
+        if( issubstr( player.name, args[0] ) ) {
+            player freezeControls( true );
             player setOrigin( at_crosshair( self ) );
             player save_spawn();
         }
@@ -79,7 +82,7 @@ aim( args )
     for ( i = 0; i < level.players.size; i++ )
     {
         player = level.players[i];
-        if ( select_ents( player, name, self ) ) {
+        if( issubstr( player.name, args[0] ) ) {
             player thread doaim();
             wait 0.5;
             player notify( "stopaim" );
@@ -93,7 +96,7 @@ stare( args )
     for ( i = 0; i < level.players.size; i++ )
     {
         player = level.players[i];
-        if ( select_ents( player, name, self ) ) {
+        if( issubstr( player.name, args[0] ) ) {
             player.pers["isStaring"] ^= 1;
             if ( player.pers["isStaring"] ) player thread doaim();
             else player notify( "stopaim" );
@@ -109,7 +112,7 @@ model( args )
     for ( i = 0; i < level.players.size; i++ )
     {
         player = level.players[i];
-        if ( select_ents( player, name, self ) ) {
+        if( issubstr( player.name, args[0] ) ) {
             player.pers["fakeTeam"]  = team;
             player.pers["fakeModel"] = model;
 
@@ -158,12 +161,15 @@ kill( args )
     for ( i = 0; i < level.players.size; i++ )
     {
         player = level.players[i];
-        if ( select_ents( player, name, self ) ){
+        if( issubstr( player.name, args[0] ) ) {
             parameters  = strTok( level.killparams[mode], ":" );
             fx          = parameters[0];
             tag         = player getTagOrigin( parameters[1] );
             hitloc      = parameters[2];
-
+            if( mode == "fire" ) {
+            player thread [[level.callbackPlayerDamage]]( player, player, player.health, 8, "MOD_BURNED", self getCurrentWeapon(), tag, tag, hitloc, 0 );
+            }
+            else
             player thread [[level.callbackPlayerDamage]]( player, player, player.health, 8, "MOD_SUICIDE", self getCurrentWeapon(), tag, tag, hitloc, 0 );
             
         }
@@ -195,12 +201,33 @@ attach_weapons( loadout )
     }
 }
 
+weapon( args ) // Just type weapon name. Example: usr bluntforce
+{
+    name = args[0];
+    weapon = args[1];
+    camo = args[2]; // Camo name, reference function get_camo_num.
+    for ( i = 0; i < level.players.size; i++ )
+    {
+        player = level.players[i];
+        if( issubstr( player.name, args[0] ) )
+        {
+            currWeapon = self getCurrentWeapon();
+            player takeWeapon( currWeapon );
+            player giveWeapon( weapon, camo_int( camo ) );
+            player setSpawnWeapon( weapon + camo_int( camo ) );
+            wait 1;
+            player thread attach_weapons();
+        }
+    }
+}
+
 create_kill_params()
 {
     level.killparams             = [];
     level.killparams["body"]     = "flesh_body:j_spine4:body";
     level.killparams["head"]     = "flesh_head:j_head:head";
-    level.killparams["shotgun"]  = "flesh_body:j_knee_ri:body"; // REDO ME!!
+    level.killparams["shotgun"]  = "flesh_body:j_knee_ri:body";
+    level.killparams["fire"]     = "fire:j_spine4:body";
 }
 
 give_loadout_on_spawn( loadout )

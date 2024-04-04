@@ -46,40 +46,24 @@ create_spawn_thread( callback, args )
 
 
 // Weapons-related functions
-camo_int( int )
+camo_int( tracker )
 {
-    return int( tableLookup( "mp/camoTable.csv", 1, int, 0 ) );
-}
-
-get_offhand_name( item )
-{
-    switch ( item )
-    {
-        case "flash_grenade_mp":
-            return "flash";
-        case "smoke_grenade_mp":
-            return "smoke";
-        case "flare_mp":
-            return "flare";
+    wait .5;
+    switch ( tracker )
+	{
+		case "desert":
+			return 1;
+		case "woodland":
+			return 2;
+        case "digital":
+            return 3;
+        case "red":
+            return 4;
+        case "blue":
+            return 5;
         default:
-            return item;
-    }
-}
-
-// Gotta test all weapons and add them if needed
-fake_killfeed_icon( weapon )
-{
-    switch ( weapon )
-    {
-        case "cheytac":
-            return "intervention";
-        case "m4":
-            return "m4a1";
-        case "masada":
-            return "acr";
-        default:
-            return weapon;
-    }
+			return 0;
+	}
 }
 
 take_offhands_tac()
@@ -106,12 +90,9 @@ is_akimbo( weapon )
     return false;
 }
 
-skip_prematch() // Works, i guess... -4g
+skip_prematch()
 {
-    //thread maps\mp\gametypes\_globallogic::matchStartTimer( "waiting_for_teams", "0" );
-    //thread maps\mp\gametypes\_globallogic::matchStartTimer( "Moviemaking starts in:", 0 );
-    setDvar( "scr_game_graceperiod", 5);
-    level.prematchPeriodEnd = -1;
+    level.prematchPeriod = -1;
 }
 
 lod_tweaks()
@@ -124,12 +105,12 @@ lod_tweaks()
 
 hud_tweaks()
 {
-    setDvar("sv_hostname", "^3Sass' Cinematic Mod ^7- Ported to WAW by ^3Forgive & Antiga");
+    setDvar("sv_hostname", "^3Sass' Cinematic Mod ^7- Ported to COD4 by ^3Forgive");
     setDvar("g_TeamName_Allies",    "allies");
     setDvar("g_TeamName_Axis",      "axis");
-    setDvar("ui_hud_hardcore",        !level.VISUAL_HUD);
-    maps\mp\gametypes\_globallogic::setObjectiveText(game["attackers"], "^3Sass' Cinematic Mod ^7- Ported to WAW by ^3Forgive ^7and ^3Antiga");
-	maps\mp\gametypes\_globallogic::setObjectiveText(game["defenders"], "^3Sass' Cinematic Mod ^7- Ported to WAW by ^3Forgive ^7and ^3Antiga");
+    setDvar("sv_cheats", 1);
+    maps\mp\gametypes\_globallogic::setObjectiveText(game["attackers"], "^3Sass' Cinematic Mod ^7- Ported to COD4 by ^3Forgive");
+	maps\mp\gametypes\_globallogic::setObjectiveText(game["defenders"], "^3Sass' Cinematic Mod ^7- Ported to COD4 by ^3Forgive");
 
     game["strings"]["change_class"] = undefined;
 }

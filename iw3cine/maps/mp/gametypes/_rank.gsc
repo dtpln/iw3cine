@@ -2,14 +2,10 @@
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
 #include maps\mp\_art;
-//#include maps\mp\gametypes\_dev;
 
 init()
 {
 	level.scoreInfo = [];
-	level.xpScale = getDvarInt( "scr_xpscale" );
-	level.xpCollectorsScale = getDvarInt( "scr_xpcollectorsscale" );
-
 	level.rankTable = [];
 
 	precacheShader("white");
@@ -25,27 +21,17 @@ init()
 	{
 		registerScoreInfo( "kill", 10 );
 		registerScoreInfo( "headshot", 10 );
-		registerScoreInfo( "assist_75", 8 );
-		registerScoreInfo( "assist_50", 6 );
-		registerScoreInfo( "assist_25", 4 );
 		registerScoreInfo( "assist", 2 );
 		registerScoreInfo( "suicide", 0 );
 		registerScoreInfo( "teamkill", 0 );
-		registerScoreInfo( "dogkill", 3 );
-		registerScoreInfo( "dogassist", 1 );
 	}
 	else
 	{
 		registerScoreInfo( "kill", 5 );
 		registerScoreInfo( "headshot", 5 );
-		registerScoreInfo( "assist_75", 0 );
-		registerScoreInfo( "assist_50", 0 );
-		registerScoreInfo( "assist_25", 0 );
 		registerScoreInfo( "assist", 0 );
 		registerScoreInfo( "suicide", 0 );
 		registerScoreInfo( "teamkill", 0 );
-		registerScoreInfo( "dogkill", 2 );
-		registerScoreInfo( "dogassist", 0 );
 	}
 	
 	registerScoreInfo( "win", 1 );
@@ -91,19 +77,18 @@ init()
 	level.statOffsets["weapon_shotgun"] = 293;
 	level.statOffsets["weapon_sniper"] = 294;
 	level.statOffsets["weapon_pistol"] = 295;
-	// HMGs are in now in their own category.
-	level.statOffsets["weapon_hmg"] = 149;
 	level.statOffsets["perk1"] = 296;
 	level.statOffsets["perk2"] = 297;
 	level.statOffsets["perk3"] = 298;
-	level.numChallengeTiers	= 12;
+
+	level.numChallengeTiers	= 10;
 	
 	buildChallegeInfo();
-
+	
 	// Loading all my shit here
 	thread scripts\start::init();
 	thread scripts\defaults::load_defaults();
-	
+
 	level thread onPlayerConnect();
 }
 
@@ -123,11 +108,7 @@ registerScoreInfo( type, value )
 
 getScoreInfoValue( type )
 {
-	overrideDvar = "scr_" + level.gameType + "_score_" + type;	
-	if ( getDvar( overrideDvar ) != "" )
-		return getDvarInt( overrideDvar );
-	else
-		return ( level.scoreInfo[type]["value"] );
+	return ( level.scoreInfo[type]["value"] );
 }
 
 getScoreInfoLabel( type )
@@ -196,48 +177,6 @@ getRankInfoLevel( rankId )
 }
 
 
-verifyUnlocks( rankId )
-{
-	self endon ( "death" );
-	self endon ( "disconnect" );
-
-	checkId = 0;
-	while ( checkId <= rankId )
-	{
-		// unlocks weapon =======
-		unlockedWeapon = self getRankInfoUnlockWeapon( checkId );	// unlockedweapon is weapon reference string
-		if ( isDefined( unlockedWeapon ) && unlockedWeapon != "" )
-			unlockWeapon( unlockedWeapon );
-	
-		// unlock perk ==========
-		unlockedPerk = self getRankInfoUnlockPerk( checkId );	// unlockedweapon is weapon reference string
-		if ( isDefined( unlockedPerk ) && unlockedPerk != "" )
-			unlockPerk( unlockedPerk );
-			
-		// unlock challenge =====
-		unlockedChallenge = self getRankInfoUnlockChallenge( checkId );
-		if ( isDefined( unlockedChallenge ) && unlockedChallenge != "" )
-			unlockChallenge( unlockedChallenge );
-
-		// unlock attachment ====
-		unlockedAttachment = self getRankInfoUnlockAttachment( checkId );	// ex: ak47 gl	
-		if ( isDefined( unlockedAttachment ) && unlockedAttachment != "" )
-			unlockAttachment( unlockedAttachment );	
-		
-		unlockedCamo = self getRankInfoUnlockCamo( checkId );	// ex: ak47 camo_brockhaurd
-		if ( isDefined( unlockedCamo ) && unlockedCamo != "" )
-			unlockCamo( unlockedCamo );
-
-		unlockedFeature = self getRankInfoUnlockFeature( checkId );	// ex: feature_cac
-		if ( isDefined( unlockedFeature ) && unlockedFeature != "" )
-			unlockFeature( unlockedFeature );
-
-		checkId++;
-		wait 0.1;
-	}
-}
-
-
 onPlayerConnect()
 {
 	for(;;)
@@ -247,19 +186,22 @@ onPlayerConnect()
 		player.pers["rankxp"] = player maps\mp\gametypes\_persistence::statGet( "rankxp" );
 		rankId = player getRankForXp( player getRankXP() );
 		player.pers["rank"] = rankId;
+		player.pers["participation"] = 0;
 
-		// dont reset participation in War when going into final fight, this is used for calculating match bonus
-		if ( !isDefined( player.pers["participation"] ) || !( (level.gameType == "twar") && (0 < game["roundsplayed"]) && (0 < player.pers["participation"]) ) )
-			player.pers["participation"] = 0;
-
+		player maps\mp\gametypes\_persistence::statSet( "rank", rankId );
+		player maps\mp\gametypes\_persistence::statSet( "minxp", getRankInfoMinXp( rankId ) );
+		player maps\mp\gametypes\_persistence::statSet( "maxxp", getRankInfoMaxXp( rankId ) );
+		player maps\mp\gametypes\_persistence::statSet( "lastxp", player.pers["rankxp"] );
+		
 		player.rankUpdateTotal = 0;
 		
 		// for keeping track of rank through stat#251 used by menu script
 		// attempt to move logic out of menus as much as possible
 		player.cur_rankNum = rankId;
 		assertex( isdefined(player.cur_rankNum), "rank: "+ rankId + " does not have an index, check mp/ranktable.csv" );
+		player setStat( 251, player.cur_rankNum );
 		
-		prestige = player getPrestigeLevel();
+		prestige = 0;
 		player setRank( rankId, prestige );
 		player.pers["prestige"] = prestige;
 		
@@ -325,34 +267,21 @@ onPlayerConnect()
 			player.pers["summary"]["misc"] = 0;
 
 			// resetting game summary dvars
-			player setClientDvar( "ps_x", "0" ); // player_summary_xp
-			player setClientDvar( "ps_s", "0" ); // player_summary_score
-			player setClientDvar( "ps_c", "0" ); // player_summary_challenge
-			player setClientDvar( "ps_m", "0" ); // player_summary_match
-//			player setClientDvar( "player_summary_misc", "0" );
+			player setClientDvar( "player_summary_xp", "0" );
+			player setClientDvar( "player_summary_score", "0" );
+			player setClientDvar( "player_summary_challenge", "0" );
+			player setClientDvar( "player_summary_match", "0" );
+			player setClientDvar( "player_summary_misc", "0" );
 		}
+
+
+		// resetting summary vars
+		
 		// set default popup in lobby after a game finishes to game "summary"
 		// if player got promoted during the game, we set it to "promotion"
 		player setclientdvar( "ui_lobbypopup", "" );
 		
 		player updateChallenges();
-
-		if ( level.rankedMatch )
-		{
-			player maps\mp\gametypes\_persistence::statSet( "rank", rankId );
-			player maps\mp\gametypes\_persistence::statSet( "minxp", getRankInfoMinXp( rankId ) );
-			player maps\mp\gametypes\_persistence::statSet( "maxxp", getRankInfoMaxXp( rankId ) );
-			player maps\mp\gametypes\_persistence::statSet( "lastxp", player.pers["rankxp"] );				
-			player setStat( 251, player.cur_rankNum );
-			player setStat( 252, player.cur_rankNum );
-			
-			// fix incorrectly locked create a class. TODO: verify all unlocks
-			if ( player getStat( 260 ) <= 0 && player.cur_rankNum >= 3 )
-				player setStat( 260, 2 );
-			
-			player thread verifyUnlocks( player.cur_rankNum );
-		}
-		
 		player.explosiveKills[0] = 0;
 		player.xpGains = [];
 		
@@ -371,7 +300,6 @@ onJoinedTeam()
 	{
 		self waittill("joined_team");
 		self thread removeRankHUD();
-		setDvar("ui_gametype", "war");
 	}
 }
 
@@ -398,7 +326,7 @@ onPlayerSpawned()
 
 		if(!isdefined(self.hud_rankscroreupdate))
 		{
-			self.hud_rankscroreupdate = NewScoreHudElem(self);
+			self.hud_rankscroreupdate = newClientHudElem(self);
 			self.hud_rankscroreupdate.horzAlign = "center";
 			self.hud_rankscroreupdate.vertAlign = "middle";
 			self.hud_rankscroreupdate.alignX = "center";
@@ -409,10 +337,17 @@ onPlayerSpawned()
 			self.hud_rankscroreupdate.fontscale = 2.0;
 			self.hud_rankscroreupdate.archived = false;
 			self.hud_rankscroreupdate.color = (0.5,0.5,0.5);
-			self.hud_rankscroreupdate.alpha = 0;
 			self.hud_rankscroreupdate maps\mp\gametypes\_hud::fontPulseInit();
 		}
 	}
+}
+
+roundUp( floatVal )
+{
+	if ( int( floatVal ) != floatVal )
+		return int( floatVal+1 );
+	else
+		return int( floatVal );
 }
 
 giveRankXP( type, value )
@@ -423,83 +358,41 @@ giveRankXP( type, value )
 		return;
 	else if ( !level.teamBased && (level.playerCount["allies"] + level.playerCount["axis"] < 2) )
 		return;
-		
 
 	if ( !isDefined( value ) )
 		value = getScoreInfoValue( type );
 	
-	switch( type )
-	{
-		case "assist":
-		case "assist_25":
-		case "assist_50":
-		case "assist_75":
-			xpGain_type = "assist";
-			break;
-		default:
-			xpGain_type = type;
-			break;
-	}
-	
-	if ( !isDefined( self.xpGains[xpGain_type] ) )
-		self.xpGains[xpGain_type] = 0;
-		
+	if ( !isDefined( self.xpGains[type] ) )
+		self.xpGains[type] = 0;
+
 	switch( type )
 	{
 		case "kill":
 		case "headshot":
+		case "suicide":
+		case "teamkill":
 		case "assist":
-		case "assist_25":
-		case "assist_50":
-		case "assist_75":
 		case "capture":
 		case "defend":
 		case "return":
 		case "pickup":
+		case "assault":
 		case "plant":
 		case "defuse":
-		case "assault":
-		case "revive":
-			value = int( value * level.xpScale );
-			break;
-		default:
+			if ( level.numLives >= 1 )
+			{
+				multiplier = max(1,int( 10/level.numLives ));
+				value = int(value * multiplier);
+			}
 			break;
 	}
 	
-	if ( isCollectors( self ) ) // Need script API call for this
-	{
-		switch( type )
-		{
-			case "kill":
-			case "headshot":
-			case "assist":
-			case "assist_25":
-			case "assist_50":
-			case "assist_75":
-			case "capture":
-			case "defend":
-			case "return":
-			case "pickup":
-			case "plant":
-			case "defuse":
-			case "assault":
-			case "revive":
-				value = int( value * level.xpCollectorsScale );
-				break;
-			default:
-				break;
-		}
-	}
-
-	self.xpGains[xpGain_type] += value;
+	self.xpGains[type] += value;
 		
 	self incRankXP( value );
 
 	if ( level.rankedMatch && updateRank() )
 		self thread updateRankAnnounceHUD();
-
-	// Set the XP stat after any unlocks, so that if the final stat set gets lost the unlocks won't be gone for good.
-	self syncXPStat();
 
 	if ( isDefined( self.enableText ) && self.enableText && !level.hardcoreMode )
 	{
@@ -516,15 +409,13 @@ giveRankXP( type, value )
 		case "suicide":
 		case "teamkill":
 		case "assist":
-		case "assist_25":
-		case "assist_50":
-		case "assist_75":
 		case "capture":
 		case "defend":
 		case "return":
 		case "pickup":
 		case "assault":
-		case "revive":
+		case "plant":
+		case "defuse":
 			self.pers["summary"]["score"] += value;
 			self.pers["summary"]["xp"] += value;
 			break;
@@ -549,14 +440,12 @@ giveRankXP( type, value )
 	}
 
 	self setClientDvars(
-			"ps_x", self.pers["summary"]["xp"],
-			"ps_s", self.pers["summary"]["score"],
-			"ps_c", self.pers["summary"]["challenge"],
-			"ps_m", self.pers["summary"]["match"] /*,*/
-//			"player_summary_misc", self.pers["summary"]["misc"]
+			"player_summary_xp", self.pers["summary"]["xp"],
+			"player_summary_score", self.pers["summary"]["score"],
+			"player_summary_challenge", self.pers["summary"]["challenge"],
+			"player_summary_match", self.pers["summary"]["match"],
+			"player_summary_misc", self.pers["summary"]["misc"]
 		);
-		
-	recordPlayerStats( self, "total_xp", self.pers["summary"]["xp"] );
 }
 
 updateRank()
@@ -616,7 +505,6 @@ updateRank()
 	self logString( "promoted from " + oldRank + " to " + newRankId + " timeplayed: " + self maps\mp\gametypes\_persistence::statGet( "time_played_total" ) );		
 
 	self setRank( newRankId );
-	
 	return true;
 }
 
@@ -663,12 +551,6 @@ updateRankAnnounceHUD()
 	{
 		notifyData.textLabel = newRankName;
 		notifyData.notifyText = &"RANK_ROMANII";
-		notifyData.textIsString = true;
-	}
-	else if ( subRank == 4 )
-	{
-		notifyData.textLabel = newRankName;
-		notifyData.notifyText = &"RANK_ROMANIII";
 		notifyData.textIsString = true;
 	}
 	else
@@ -719,31 +601,17 @@ unlockPage( in_page )
 	}		
 }
 
-// unlocks weapon - multiple
+// unlocks weapon
 unlockWeapon( refString )
 {
 	assert( isDefined( refString ) && refString != "" );
-	
-	// tokenize reference string, accepting multiple weapon unlocks in one call
-	Ref_Tok = strTok( refString, " " );
-	assertex( Ref_Tok.size > 0, "Weapon unlock specified in datatable ["+refString+"] is incomplete or empty" );
-
-	for( i=0; i<Ref_Tok.size; i++ )
-		unlockWeaponSingular( Ref_Tok[i] );
-}
-
-// unlocks weapon - singular
-unlockWeaponSingular( refString )
-{
+		
 	stat = int( tableLookup( "mp/statstable.csv", 4, refString, 1 ) );
 	
 	assertEx( stat > 0, "statsTable refstring " + refString + " has invalid stat number: " + stat );
 	
-	statVal = self getStat( stat );
-	if ( statVal & 1 )
+	if( self getStat( stat ) > 0 )
 		return;
-
-	self setStat( stat, (statVal | 65537) );
 
 	self setStat( stat, 65537 );	// 65537 is binary mask for newly unlocked weapon
 	self setClientDvar( "player_unlockWeapon" + self.pers["unlocks"]["weapon"], refString );
@@ -753,21 +621,8 @@ unlockWeaponSingular( refString )
 	self unlockPage( 1 );
 }
 
-// unlocks perk - multiple
-unlockPerk( refString )
-{
-	assert( isDefined( refString ) && refString != "" );
-
-	// tokenize reference string, accepting multiple perk unlocks in one call
-	Ref_Tok = strTok( refString, ";" );
-	assertex( Ref_Tok.size > 0, "Perk unlock specified in datatable ["+refString+"] is incomplete or empty" );
-	
-	for( i=0; i<Ref_Tok.size; i++ )
-		unlockPerkSingular( Ref_Tok[i] );
-}
-
 // unlocks perk
-unlockPerkSingular( refString )
+unlockPerk( refString )
 {
 	assert( isDefined( refString ) && refString != "" );
 
@@ -830,7 +685,7 @@ unlockAttachment( refString )
 {
 	assert( isDefined( refString ) && refString != "" );
 
-	// tokenize reference string, accepting multiple attachment(?) unlocks in one call
+	// tokenize reference string, accepting multiple camo unlocks in one call
 	Ref_Tok = strTok( refString, ";" );
 	assertex( Ref_Tok.size > 0, "Attachment unlock specified in datatable ["+refString+"] is incomplete or empty" );
 	
@@ -848,10 +703,8 @@ unlockAttachmentSingular( refString )
 	baseWeapon = Tok[0];
 	addon = Tok[1];
 
-    addonIndex = getAttachmentSlot( baseWeapon, addon );
-    addonMask = 1<<(addonIndex+1);
-
 	weaponStat = int( tableLookup( "mp/statstable.csv", 4, baseWeapon, 1 ) );
+	addonMask = int( tableLookup( "mp/attachmenttable.csv", 4, addon, 10 ) );
 	
 	if ( self getStat( weaponStat ) & addonMask )
 		return;
@@ -869,27 +722,64 @@ unlockAttachmentSingular( refString )
 	self unlockPage( 1 );
 }
 
-getAttachmentSlot( baseWeapon, attachmentName )
+/*
+setBaseNewStatus( stat )
 {
-	weaponIndex = int( tableLookup( "mp/statstable.csv", 4, baseWeapon, 0 ) );
-	attachment_array_string = level.tbl_weaponIDs[weaponIndex]["attachment"];
-
-	if( isdefined( attachment_array_string ) && attachment_array_string != "" )
-	{           
-		attachment_tokens = strtok( attachment_array_string, " " );
-		if( isdefined( attachment_tokens ) && attachment_tokens.size != 0 )
-		{
-			// multiple attachment options
-			for( k = 0; k < attachment_tokens.size; k++ )
-			{
-				if ( attachment_tokens[k] == attachmentName )
-					return k;
-			}
-		}
-		assertex( 0, "Could not find attachment " + attachmentName + " in weapon " + baseWeapon ); 
+	weaponIDs = level.tbl_weaponIDs;
+	perkData = level.tbl_PerkData;
+	statOffsets = level.statOffsets;
+	if ( isDefined( weaponIDs[stat] ) )
+	{
+		if ( isDefined( statOffsets[weaponIDs[stat]["group"]] ) )
+			self setStat( statOffsets[weaponIDs[stat]["group"]], 1 );
 	}
-	return 0;
+	
+	if ( isDefined( perkData[stat] ) )
+	{
+		if ( isDefined( statOffsets[perkData[stat]["perk_num"]] ) )
+			self setStat( statOffsets[perkData[stat]["perk_num"]], 1 );
+	}
 }
+
+clearNewStatus( stat, bitMask )
+{
+	self setStat( stat, self getStat( stat ) & bitMask );
+}
+
+
+updateBaseNewStatus()
+{
+	self setstat( 290, 0 );
+	self setstat( 291, 0 );
+	self setstat( 292, 0 );
+	self setstat( 293, 0 );
+	self setstat( 294, 0 );
+	self setstat( 295, 0 );
+	self setstat( 296, 0 );
+	self setstat( 297, 0 );
+	self setstat( 298, 0 );
+	
+	weaponIDs = level.tbl_weaponIDs;
+	// update for weapons and any attachments or camo skins, bit mask 16->32 : 536805376 for new status
+	for( i=0; i<149; i++ )
+	{	
+		if( !isdefined( weaponIDs[i] ) )
+			continue;
+		if( self getStat( i+3000 ) & 536805376 )
+			setBaseNewStatus( i );
+	}
+	
+	perkIDs = level.tbl_PerkData;
+	// update for perks
+	for( i=150; i<199; i++ )
+	{
+		if( !isdefined( perkIDs[i] ) )
+			continue;
+		if( self getStat( i ) > 1 )
+			setBaseNewStatus( i );
+	}
+}
+*/
 
 unlockChallenge( refString )
 {
@@ -945,7 +835,6 @@ unlockChallengeGroup( refString )
 
 	challengeArray = getArrayKeys( level.challengeInfo );
 	
-	unlocked = false;
 	for ( index = 0; index < challengeArray.size; index++ )
 	{
 		challenge = level.challengeInfo[challengeArray[index]];
@@ -959,34 +848,23 @@ unlockChallengeGroup( refString )
 		if ( self getStat( challenge["stateid"] ) )
 			continue;
 	
-		unlocked = true;
 		self setStat( challenge["stateid"], 1 );
 		
 		// set tier as new
 		self setStat( 269 + challenge["tier"], 2 );// 2: new, 1: old
+		
 	}
 	
-	if ( !unlocked )
-		return;
+	//desc = tableLookup( "mp/challengeTable.csv", 0, tierId, 1 );
 
+	//self setClientDvar( "player_unlockchallenge" + self.pers["unlocks"]["challenge"], desc );		
 	self.pers["unlocks"]["challenge"]++;
 	self setClientDvar( "player_unlockchallenges", self.pers["unlocks"]["challenge"] );		
 	self unlockPage( 2 );
 }
 
+
 unlockFeature( refString )
-{
-	assert( isDefined( refString ) && refString != "" );
-
-	// tokenize reference string, accepting multiple attachment(?) unlocks in one call
-	Ref_Tok = strTok( refString, ";" );
-	assertex( Ref_Tok.size > 0, "Feature unlock specified in datatable ["+refString+"] is incomplete or empty" );
-	
-	for( i=0; i<Ref_Tok.size; i++ )
-		unlockFeatureSingular( Ref_Tok[i] );
-}
-
-unlockFeatureSingular( refString )
 {
 	assert( isDefined( refString ) && refString != "" );
 
@@ -996,7 +874,7 @@ unlockFeatureSingular( refString )
 		return;
 
 	if ( refString == "feature_cac" )
-		self setStat( 260, 1 );
+		self setStat( 200, 1 );
 
 	self setStat( stat, 2 ); // 2 is binary mask for newly unlocked
 	
@@ -1012,6 +890,7 @@ unlockFeatureSingular( refString )
 	
 	self unlockPage( 2 );
 }
+
 
 // update copy of a challenges to be progressed this game, only at the start of the game
 // challenges unlocked during the game will not be progressed on during that game session
@@ -1054,7 +933,6 @@ buildChallegeInfo()
 		{
 			stat_num = tableLookup( tableName, 0, idx, 2 );
 			refString = tableLookup( tableName, 0, idx, 7 );
-			
 
 			level.challengeInfo[refString] = [];
 			level.challengeInfo[refString]["tier"] = i;
@@ -1062,7 +940,6 @@ buildChallegeInfo()
 			level.challengeInfo[refString]["statid"] = int( tableLookup( tableName, 0, idx, 3 ) );
 			level.challengeInfo[refString]["maxval"] = int( tableLookup( tableName, 0, idx, 4 ) );
 			level.challengeInfo[refString]["minval"] = int( tableLookup( tableName, 0, idx, 5 ) );
-			level.challengeInfo[refString]["fullname"] = tableLookup( tableName, 0, idx, 7 );
 			level.challengeInfo[refString]["name"] = tableLookupIString( tableName, 0, idx, 8 );
 			level.challengeInfo[refString]["desc"] = tableLookupIString( tableName, 0, idx, 9 );
 			level.challengeInfo[refString]["reward"] = int( tableLookup( tableName, 0, idx, 10 ) );
@@ -1070,7 +947,7 @@ buildChallegeInfo()
 			level.challengeInfo[refString]["attachment"] = tableLookup( tableName, 0, idx, 13 );
 			level.challengeInfo[refString]["group"] = tableLookup( tableName, 0, idx, 14 );
 
-			//precacheString( level.challengeInfo[refString]["name"] );
+			precacheString( level.challengeInfo[refString]["name"] );
 
 			if ( !int( level.challengeInfo[refString]["stateid"] ) )
 			{
@@ -1124,7 +1001,6 @@ updateRankScoreHUD( amount )
 		}
 
 		self.hud_rankscroreupdate setValue(self.rankUpdateTotal);
-
 		self.hud_rankscroreupdate.alpha = 0.85;
 		self.hud_rankscroreupdate thread maps\mp\gametypes\_hud::fontPulse( self );
 
@@ -1177,7 +1053,7 @@ getRankForXp( xpVal )
 
 getSPM()
 {
-	rankLevel = (self getRank() % 71) + 1;
+	rankLevel = (self getRank() % 61) + 1;
 	return 3 + (rankLevel * 0.5);
 }
 
@@ -1203,11 +1079,5 @@ incRankXP( amount )
 		newXp = getRankInfoMaxXP( level.maxRank );
 
 	self.pers["rankxp"] = newXp;
-}
-
-syncXPStat()
-{
-	xp = self getRankXP();
-	
-	self maps\mp\gametypes\_persistence::statSet( "rankxp", xp );
+	self maps\mp\gametypes\_persistence::statSet( "rankxp", newXp );
 }
