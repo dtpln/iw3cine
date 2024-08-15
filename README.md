@@ -4,7 +4,7 @@
 
 ### 🎥 A features-rich cinematic mod for Call of Duty 4: Modern Warfare
 
-<img src="https://img.shields.io/badge/REWRITE%20IN%20PROGRESS-eecb00?style=flat-square">　<a href="https://github.com/dtpln/iw3cine/releases/latest"><img src="https://img.shields.io/github/v/release/dtpln/iw3cine?label=Latest%20release&style=flat-square&color=eecb00"></a>　<a href="https://discord.gg/wgRJDJJ"><img src="https://img.shields.io/discord/617736623412740146?label=Join%20the%20IW4Cine%20Discord!&style=flat-square&color=eecb00"></a>  <a href="https://github.com/dtpln/iw3cine/releases/latest"><img src="https://img.shields.io/github/downloads/dtpln/iw3cine/total?color=eecb00&label=Downloads&style=flat-square"></a>
+<img src="https://img.shields.io/badge/REWRITE%20IN%20PROGRESS-eecb00?style=flat-square">　<a href="https://github.com/dtpln/iw3cine/releases/latest"><img src="https://img.shields.io/github/v/release/dtpln/iw3cine?label=Latest%20release&style=flat-square&color=eecb00"></a>　<a href="https://discord.gg/wgRJDJJ"><img src="https://img.shields.io/discord/617736623412740146?label=Join%20the%20IW4Cine%20Discord!&style=flat-square&color=eecb00"></a>  <a href="https://github.com/dtpln/iw3cine/releases/latest"><img src="https://img.shields.io/github/downloads/dtpln/iw3cine/#400/total?color=eecb00&label=Downloads&style=flat-square"></a>
 <br/><br/>
 
 **PLEASE NOTE**: As the original mod is in a WIP phase, so will this port be..
