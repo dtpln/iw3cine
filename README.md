@@ -1,25 +1,24 @@
-<img src="AWAITING HEADER IMAGE...">
-
-# *IW3cine*
-
+<div align="center"> 
+    
+[![IW3Cine](https://raw.githubusercontent.com/dtpln/codcine/main/assets/img/iw3cine_new.png 'T4Cine')](https://github.com/dtpln/iw3cine)
 ### 🎥 A features-rich cinematic mod for Call of Duty 4: Modern Warfare
 
-<img src="https://img.shields.io/badge/REWRITE%20IN%20PROGRESS-eecb00?style=flat-square">　<a href="https://github.com/dtpln/iw3cine/releases/latest"><img src="https://img.shields.io/github/v/release/dtpln/iw3cine?label=Latest%20release&style=flat-square&color=eecb00"></a>　<a href="https://discord.gg/wgRJDJJ"><img src="https://img.shields.io/discord/617736623412740146?label=Join%20the%20IW4Cine%20Discord!&style=flat-square&color=eecb00"></a>  <a href="https://github.com/dtpln/iw3cine/releases/latest"><img src="https://img.shields.io/github/downloads/dtpln/iw3cine/%23400/total?color=eecb00&label=Downloads&style=flat-square"></a>
+<a href="https://github.com/dtpln/iw3cine/releases"><img src="https://img.shields.io/github/v/release/dtpln/iw3cine?label=Latest%20release&style=flat-square&color=eecb00"></a>　
+<a href="https://discord.gg/wgRJDJJ"><img src="https://img.shields.io/discord/617736623412740146?label=Join%20the%20IW4Cine%20Discord!&style=flat-square&color=eecb00"></a>　
+<a href="https://github.com/dtpln/iw3cine/releases/latest"><img src="https://img.shields.io/github/downloads/dtpln/iw3cine/total?color=eecb00&label=Downloads&style=flat-square"></a>
+</div>
 <br/><br/>
 
-**PLEASE NOTE**: As the original mod is in a WIP phase, so will this port be..
-
-This is a port of [Sass' Cinematic Mod](https://github.com/sortileges/iw4cine) for Call of Duty 4: Modern Warfare, designed for video editors to create cinematics shots in-game.
+This is a port of [Sass' Cinematic Mod](https://github.com/sortileges/iw4cine) for **Call of Duty: Modern Warfare (2007)**, designed for video editors to create cinematics shots in-game.
 
 This mod creates new dvars combined as player commands. They are all associated to script functions that are triggered when the dvar doesn't equal it's default value, meaning these functions will all independently stay idle until they get notified to go ahead.
 
 This mod was also designed as a Multiplayer mod only. It will not work in Singleplayer or Zombies.
 
-
 <br/><br/>
 ## Requirements
 
-In order to use the latest version of this mod directly from the repo, you'll need a copy of **Call of Duty 4: Modern Warfare®** with or without the **[IW3XO](https://xoxor4d.github.io/projects/iw3xo)** client or [COD4x](https://cod4x.ovh/t/releases/24) installed.
+In order to use the latest version of this mod directly from the repo, you'll need a copy of **Call of Duty 4: Modern Warfare®** with or without the **[IW3XO](https://xoxor4d.github.io/projects/iw3xo)** client or [COD4x](https://cod4x.ovh/t/releases/24) installed. This mod was built on the **[IW3XO](https://xoxor4d.github.io/projects/iw3xo)** client.
 
 <br/><br/>
 ## Installation
