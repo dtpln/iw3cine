@@ -27,7 +27,7 @@
     - [x]   stare             -- <bot_name>
     - [x]   model             -- <bot_name> <MODEL> <allies/axis>
     - [x]   kill              -- <bot_name> <body/head/shotgun>
-    - [x]   holdgun
+    - [x]   holdgun           -- <set to 1>
     - [x]   freeze            -- <set to 1>
    
 </br><br/>
