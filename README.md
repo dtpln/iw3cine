@@ -58,9 +58,9 @@ Once [Sass](https://github.com/sortileges) finishes the mod's rewrite, the HTML 
     - [x]   clearbodies       -- <set to 1>
     - [x]   viewhands         -- <model_name>
     - [x]   eb_explosive      -- <radius>
-    - [x]   eb_magic          -- <degrees>
+    - [ ]   eb_magic          -- <degrees>        // FIX THIS
     - [x]   spawn_model       -- <model_name>
-    - [x]   spawn_fx          -- <fx_name>
+    - [x]   spawn_fx          -- <fx_name>        // Requires folder/name; example: fire/fire_smoke_trail_L
     - [x]   vision            -- <vision>
     - [x]   fog               -- <start> <half> <red> <green> <blue> <time>
 
@@ -71,10 +71,10 @@ Once [Sass](https://github.com/sortileges) finishes the mod's rewrite, the HTML 
     - [x]   move              -- <bot_name>
     - [x]   aim               -- <bot_name>
     - [x]   stare             -- <bot_name>
-    - [x]   model
+    - [x]   model             -- <bot_name> <MODEL> <allies/axis>
     - [x]   kill              -- <bot_name> <body/head>
-    - [x]   holdgun
-    - [ ]   freeze            -- <set to 1> // Leaving out for now since bots have 0 AI.
+    - [x]   holdgun           -- <set to 1>
+    - [x]   freeze            -- <set to 1>
    
 </br><br/>
 **PLANNED FEATURES**
