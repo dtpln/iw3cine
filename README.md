@@ -1,6 +1,6 @@
 <div align="center"> 
     
-[![IW3Cine](https://raw.githubusercontent.com/dtpln/codcine/main/assets/img/iw3cine_new.png 'T4Cine')](https://github.com/dtpln/iw3cine)
+[![IW3Cine](https://raw.githubusercontent.com/dtpln/codcine/main/assets/img/iw3cine_new.png 'T4Cine')](https://github.com/dtpln/codcine)
 ### 🎥 A features-rich cinematic mod for Call of Duty 4: Modern Warfare
 
 <a href="https://github.com/dtpln/iw3cine/releases"><img src="https://img.shields.io/github/v/release/dtpln/iw3cine?label=Latest%20release&style=flat-square&color=eecb00"></a>　
